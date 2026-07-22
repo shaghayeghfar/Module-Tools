@@ -13,4 +13,4 @@ set -euo pipefail
 # But this seemed like a bad idea...
 
 
-cat helper-files/*
+cat ../helper-files/*

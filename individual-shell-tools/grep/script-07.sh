@@ -6,4 +6,4 @@ set -euo pipefail
 # The output should show that dialogue.txt contains 6 lines, dialogue-2.txt contains 2, and dialogue-3.txt contains 0.
 
 
-grep -ic 'Doctor' *.txt
+grep -c '^Doctor:' *.txt

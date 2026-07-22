@@ -10,5 +10,5 @@ set -euo pipefail
 #        5      30     151 total
 
 
-wc helper-files/*
+wc ../helper-files/*
 
