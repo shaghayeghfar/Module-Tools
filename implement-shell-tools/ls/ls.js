@@ -4,7 +4,7 @@ const args = process.argv.slice(2);
 
 let onePerLine = false;
 let showHidden = false;
-let path = "."; // Current directory by default
+let paths = [];
 
 // Check for flags
 for (let i = 0; i < args.length; i++) {
@@ -13,37 +13,49 @@ for (let i = 0; i < args.length; i++) {
   } else if (args[i] === "-a") {
     showHidden = true;
   } else {
-    path = args[i];
+    paths.push(args[i]);
   }
 }
 
-try {
-  // Check if the path is a file
-  if (fs.statSync(path).isFile()) {
-    console.log(path);
-  } else {
-    let files = fs.readdirSync(path);
+// Use current directory if no path is given
+if (paths.length === 0) {
+  paths.push(".");
+}
 
-    // Print each file
-    for (let i = 0; i < files.length; i++) {
-      let file = files[i];
+for (let i = 0; i < paths.length; i++) {
+  let path = paths[i];
 
-      // Skip hidden files unless -a is used
-      if (!showHidden && file.startsWith(".")) {
-        continue;
+  try {
+    // Check if the path is a file
+    if (fs.statSync(path).isFile()) {
+      console.log(path);
+    } else {
+      let files = fs.readdirSync(path);
+
+      // Sort files like ls command
+      files.sort();
+
+      // Print each file
+      for (let j = 0; j < files.length; j++) {
+        let file = files[j];
+
+        // Skip hidden files unless -a is used
+        if (!showHidden && file.startsWith(".")) {
+          continue;
+        }
+
+        if (onePerLine) {
+          console.log(file);
+        } else {
+          process.stdout.write(file + " ");
+        }
       }
 
-      if (onePerLine) {
-        console.log(file);
-      } else {
-        process.stdout.write(file + " ");
+      if (!onePerLine) {
+        console.log();
       }
     }
-
-    if (!onePerLine) {
-      console.log();
-    }
+  } catch (error) {
+    console.log("Cannot access: " + path);
   }
-} catch (error) {
-  console.log("Cannot access: " + path);
 }
