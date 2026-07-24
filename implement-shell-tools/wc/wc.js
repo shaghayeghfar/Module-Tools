@@ -29,40 +29,75 @@ if (!countLines && !countWords && !countBytes) {
   countBytes = true;
 }
 
+// Totals
+let totalLines = 0;
+let totalWords = 0;
+let totalBytes = 0;
+let filesCounted = 0;
+
 // Function to count one file
 function countFile(fileName) {
-  const content = fs.readFileSync(fileName, "utf8");
+  try {
+    const content = fs.readFileSync(fileName, "utf8");
 
-  let lines = content.split("\n").length - 1;
+    let lines = content.split("\n").length - 1;
 
-  let words = content
-    .trim()
-    .split(/\s+/)
-    .filter((word) => word.length > 0).length;
+    let words = content
+      .trim()
+      .split(/\s+/)
+      .filter((word) => word.length > 0).length;
 
-  let bytes = Buffer.byteLength(content);
+    let bytes = Buffer.byteLength(content);
 
-  let result = "";
+    totalLines += lines;
+    totalWords += words;
+    totalBytes += bytes;
+    filesCounted++;
 
-  if (countLines) {
-    result += lines + " ";
+    let result = "";
+
+    if (countLines) {
+      result += lines + " ";
+    }
+
+    if (countWords) {
+      result += words + " ";
+    }
+
+    if (countBytes) {
+      result += bytes + " ";
+    }
+
+    result += fileName;
+
+    console.log(result);
+  } catch (error) {
+    console.log("Cannot read file: " + fileName);
   }
-
-  if (countWords) {
-    result += words + " ";
-  }
-
-  if (countBytes) {
-    result += bytes + " ";
-  }
-
-  result += fileName;
-
-  console.log(result);
 }
 
 // Run wc for every file
-
 for (let file of files) {
   countFile(file);
+}
+
+// Print totals if more than one file was counted
+if (filesCounted > 1) {
+  let result = "";
+
+  if (countLines) {
+    result += totalLines + " ";
+  }
+
+  if (countWords) {
+    result += totalWords + " ";
+  }
+
+  if (countBytes) {
+    result += totalBytes + " ";
+  }
+
+  result += "total";
+
+  console.log(result);
 }
