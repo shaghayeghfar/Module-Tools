@@ -1,88 +1,60 @@
+
 import sys
 
-
-# Get everything the user typed after wc.py
 arguments = sys.argv[1:]
-
-
-# These are our options
 count_lines = False
 count_words = False
 count_characters = False
-
-
-# Store file names here
 filenames = []
 
-
-# Check every argument
 for argument in arguments:
-
     if argument == "-l":
         count_lines = True
-
     elif argument == "-w":
         count_words = True
-
     elif argument == "-c":
         count_characters = True
-
     else:
         filenames.append(argument)
 
-
-
-# If the user did not give any flag,
-# show all counts like normal wc
-if (not count_lines 
-        and not count_words 
-        and not count_characters):
-
+if not count_lines and not count_words and not count_characters:
     count_lines = True
     count_words = True
     count_characters = True
 
+total_lines = 0
+total_words = 0
+total_characters = 0
 
-
-# Go through every file
 for filename in filenames:
-
-    # Open the file
     with open(filename, "r") as file:
-
-        # Read the whole file
         content = file.read()
 
+    lines = len(content.splitlines())
+    words = len(content.split())
+    characters = len(content)
 
-        # Count lines
-        lines = len(content.splitlines())
+    total_lines += lines
+    total_words += words
+    total_characters += characters
 
+    answer = ""
+    if count_lines:
+        answer += str(lines) + " "
+    if count_words:
+        answer += str(words) + " "
+    if count_characters:
+        answer += str(characters) + " "
 
-        # Count words
-        words = len(content.split())
+    print(answer + filename)
 
+if len(filenames) > 1:
+    total = ""
+    if count_lines:
+        total += str(total_lines) + " "
+    if count_words:
+        total += str(total_words) + " "
+    if count_characters:
+        total += str(total_characters) + " "
 
-        # Count characters
-        characters = len(content)
-
-
-
-        # Prepare the answer
-        answer = ""
-
-
-        if count_lines:
-            answer += str(lines) + " "
-
-
-        if count_words:
-            answer += str(words) + " "
-
-
-        if count_characters:
-            answer += str(characters) + " "
-
-
-
-        # Print the result
-        print(answer + filename)
+    print(total + "total")
