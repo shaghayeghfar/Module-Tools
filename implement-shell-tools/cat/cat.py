@@ -1,43 +1,39 @@
-import sys
+import argparse
 
-# Check if the user used a flag
-if len(sys.argv) > 1 and sys.argv[1] == "-n":
+def print_file(filename, mode):
+    with open(filename, "r") as file:
+        line_number = 1
 
-    # Start from the second argument because the first is "-n"
-    for filename in sys.argv[2:]:
-
-        with open(filename, "r") as file:
-
-            line_number = 1
-
-            for line in file:
+        for line in file:
+            if mode == "number_all":
                 print(f"{line_number} {line}", end="")
                 line_number += 1
 
-
-elif len(sys.argv) > 1 and sys.argv[1] == "-b":
-
-    # Start from the second argument because the first is "-b"
-    for filename in sys.argv[2:]:
-
-        with open(filename, "r") as file:
-
-            line_number = 1
-
-            for line in file:
-
-                # Only number non-empty lines
+            elif mode == "number_nonempty":
                 if line.strip() == "":
                     print(line, end="")
                 else:
                     print(f"{line_number} {line}", end="")
                     line_number += 1
 
+            else:
+                print(line, end="")
 
+
+parser = argparse.ArgumentParser()
+group = parser.add_mutually_exclusive_group()
+group.add_argument("-n", action="store_true", help="Number all lines")
+group.add_argument("-b", action="store_true", help="Number non-empty lines")
+parser.add_argument("filenames", nargs="+")
+
+args = parser.parse_args()
+
+if args.n:
+    mode = "number_all"
+elif args.b:
+    mode = "number_nonempty"
 else:
+    mode = "none"
 
-    # No flag, just print every file
-    for filename in sys.argv[1:]:
-
-        with open(filename, "r") as file:
-            print(file.read(), end="")
+for filename in args.filenames:
+    print_file(filename, mode)
