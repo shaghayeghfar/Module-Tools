@@ -1,8 +1,7 @@
 
-#enum exersice
+# enum exercise
 
 from dataclasses import dataclass
-from typing import List
 import sys
 
 
@@ -40,20 +39,29 @@ except ValueError:
     sys.exit(1)
 
 
-preferred_operating_system = input(
-    "Enter your preferred operating system: "
-)
-
-available_operating_systems = {
+available_operating_systems = sorted({
     laptop.operating_system for laptop in laptops
-}
+})
 
-if preferred_operating_system not in available_operating_systems:
-    print(
-        "Error: that operating system is not available.",
-        file=sys.stderr
-    )
-    sys.exit(1)
+print("Available operating systems:")
+
+for index, operating_system in enumerate(
+    available_operating_systems, start=1
+):
+    print(f"{index}. {operating_system}")
+
+while True:
+    try:
+        choice = int(input("Choose an operating system by number: "))
+
+        if 1 <= choice <= len(available_operating_systems):
+            preferred_operating_system = available_operating_systems[choice - 1]
+            break
+
+        print("Please choose a number from the menu.")
+
+    except ValueError:
+        print("Please enter a valid number.")
 
 
 person = Person(
